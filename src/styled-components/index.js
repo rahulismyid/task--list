@@ -93,14 +93,15 @@ export const StyledInput = styled.input`
 
 export const StyledButton = styled.button`
   background: transparent;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   padding: 6px 20px;
   border-radius: 10px;
   background: #e7e7e7;
   font-size: 18px;
+  font-weight: 700;
+
   &:hover {
     cursor: pointer;
-    text-decoration: underline;
   }
 `;
 
