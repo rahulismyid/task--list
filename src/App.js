@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
   StyledButton,
+  StyledChecboxInput,
   StyledContainer,
   StyledDeleteButton,
   StyledForm,
   StyledH1,
-  StyledInput,
+  StyledInputText,
   StyledListContainer,
+  StyledUl,
+  StyledLi,
 } from './styled-components';
 import './App.css';
 
@@ -42,35 +45,37 @@ function App() {
   return (
     <div className='App'>
       <StyledContainer>
-        <StyledH1>
-          <u>Task List</u>
-        </StyledH1>
+        <StyledH1>Task List</StyledH1>
         <StyledForm>
-          <StyledInput value={inputString} onChange={handleInputValue} />
+          <StyledInputText value={inputString} onChange={handleInputValue} />
           <StyledButton disabled={!inputString} onClick={handleAdd}>
             Add
           </StyledButton>
         </StyledForm>
       </StyledContainer>
       <StyledListContainer>
-        <ul>
-          {store.map(({ id, value, isChecked }) => (
-            <li key={id}>
-              <input
-                type='checkbox'
-                checked={isChecked}
-                onChange={() => handleCheckboxClick(id)}
-              />
-              <span>{value}</span>
-              <StyledDeleteButton
-                disabled={!isChecked}
-                onClick={() => handleRemove(id)}
-              >
-                X
-              </StyledDeleteButton>
-            </li>
-          ))}
-        </ul>
+        <StyledUl>
+          {store && store.length
+            ? store.map(({ id, value, isChecked }) => (
+                <>
+                  <StyledLi key={id}>
+                    <StyledChecboxInput
+                      type='checkbox'
+                      checked={isChecked}
+                      onChange={() => handleCheckboxClick(id)}
+                    />
+                    <span>{value}</span>
+                    <StyledDeleteButton
+                      disabled={!isChecked}
+                      onClick={() => handleRemove(id)}
+                    >
+                      X
+                    </StyledDeleteButton>
+                  </StyledLi>
+                </>
+              ))
+            : null}
+        </StyledUl>
       </StyledListContainer>
     </div>
   );
