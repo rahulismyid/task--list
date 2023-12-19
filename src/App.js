@@ -14,40 +14,46 @@ import {
 } from './styled-components';
 import './App.css';
 
+const uid = uuidv4();
+
 function App() {
   const [inputString, setInputString] = useState('');
-  const [store, setStore] = useState([]);
+  const [store, setStore] = useState({});
 
   const handleInputValue = (e) => setInputString(e.target.value);
 
   const handleAdd = () => {
     if (inputString) {
-      const newItem = {
-        id: uuidv4(),
-        value: inputString,
-        isChecked: false,
-      };
-      setStore((prevStore) => [...prevStore, newItem]);
+      setStore({
+        ...store,
+        [uuidv4()]: { value: inputString, isChecked: false },
+      });
       setInputString('');
     }
   };
 
-  const handleRemove = (id) =>
-    setStore((prevStore) => prevStore.filter((item) => item.id !== id));
+  const handleRemove = (id) => {
+    delete store[id];
+    setStore({ ...store });
+  };
 
-  const handleCheckboxClick = (id) =>
-    setStore((prevStore) =>
-      prevStore.map((item) =>
-        item.id === id ? { ...item, isChecked: !item.isChecked } : item
-      )
-    );
+  const handleCheckboxClick = (id) => {
+    const currentObj = store[id];
+    currentObj.isChecked = currentObj ? !currentObj?.isChecked : false;
+    setStore({ ...store, [id]: currentObj });
+  };
 
   return (
     <div className='App'>
       <StyledContainer>
         <StyledH1>Task List</StyledH1>
         <StyledForm>
-          <StyledInputText value={inputString} onChange={handleInputValue} />
+          <StyledInputText
+            key={uid}
+            name='inputstring'
+            value={inputString}
+            onChange={handleInputValue}
+          />
           <StyledButton disabled={!inputString} onClick={handleAdd}>
             Add
           </StyledButton>
@@ -55,25 +61,28 @@ function App() {
       </StyledContainer>
       <StyledListContainer>
         <StyledUl>
-          {store && store.length
-            ? store.map(({ id, value, isChecked }) => (
-                <>
-                  <StyledLi key={id}>
+          {Object.keys(store).length
+            ? Object.keys(store).map((oneKey) => {
+                const { value, isChecked } = store[oneKey];
+                return (
+                  <StyledLi key={`li-${oneKey}`}>
                     <StyledChecboxInput
+                      key={oneKey}
+                      name={`checkbox-${oneKey}`}
                       type='checkbox'
                       checked={isChecked}
-                      onChange={() => handleCheckboxClick(id)}
+                      onChange={() => handleCheckboxClick(oneKey)}
                     />
                     <span>{value}</span>
                     <StyledDeleteButton
                       disabled={!isChecked}
-                      onClick={() => handleRemove(id)}
+                      onClick={() => handleRemove(oneKey)}
                     >
                       X
                     </StyledDeleteButton>
                   </StyledLi>
-                </>
-              ))
+                );
+              })
             : null}
         </StyledUl>
       </StyledListContainer>
